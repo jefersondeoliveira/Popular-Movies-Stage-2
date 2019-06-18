@@ -35,22 +35,19 @@ public class RetrofitClientInstance {
     private static OkHttpClient getClientInterept(){
         OkHttpClient okClient = new OkHttpClient.Builder()
                 .addInterceptor(
-                        new Interceptor() {
-                            @Override
-                            public Response intercept(Interceptor.Chain chain) throws IOException {
-                                Request original = chain.request();
+                        chain -> {
+                            Request original = chain.request();
 
-                                HttpUrl url = original.url().newBuilder()
-                                        .addQueryParameter("api_key",
-                                                "YOUR KEY").build();
+                            HttpUrl url = original.url().newBuilder()
+                                    .addQueryParameter("api_key",
+                                            "85a08e715cb64d5e0d9f87daf23a3b60").build();
 
-                                Request.Builder requestBuilder = original.newBuilder()
-                                        .url(url)
-                                        .method(original.method(), original.body());
+                            Request.Builder requestBuilder = original.newBuilder()
+                                    .url(url)
+                                    .method(original.method(), original.body());
 
-                                Request request = requestBuilder.build();
-                                return chain.proceed(request);
-                            }
+                            Request request = requestBuilder.build();
+                            return chain.proceed(request);
                         })
                 .build();
         return okClient;

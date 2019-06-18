@@ -1,11 +1,19 @@
 package com.example.popularmoviesstage2.features.main.viewmodel;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.example.popularmoviesstage2.data.model.Movie;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
 
+import java.util.List;
+
 public class MainViewModel extends ViewModel {
+
+    MutableLiveData<List<Movie>> moviesLive = new MutableLiveData<>();
+    MutableLiveData<Boolean> showLoad = new MutableLiveData<>();
+    MutableLiveData<Throwable> onError = new MutableLiveData<>();
 
     private MoviesRepository mMoviesRepository;
 
@@ -17,19 +25,26 @@ public class MainViewModel extends ViewModel {
     public void getMoviesObservable(String sort) {
 
         mMoviesRepository.getMoviesBySort(sort).doOnSubscribe(disposable -> {
-
-            //load
-
+            showLoad.postValue(true);
         }).subscribe(movies -> {
-
-           //data
-
+            showLoad.postValue(false);
+            moviesLive.postValue(movies.getResults());
         }, throwable -> {
-
-            // error
-
+            showLoad.postValue(false);
+            onError.postValue(throwable);
         });
 
     }
 
+    public MutableLiveData<List<Movie>> getMoviesLive() {
+        return moviesLive;
+    }
+
+    public MutableLiveData<Boolean> getShowLoad() {
+        return showLoad;
+    }
+
+    public MutableLiveData<Throwable> getOnError() {
+        return onError;
+    }
 }
