@@ -9,4 +9,5 @@ public class MovieResponse {
     public List<Movie> getResults() {
         return results;
     }
+
 }
