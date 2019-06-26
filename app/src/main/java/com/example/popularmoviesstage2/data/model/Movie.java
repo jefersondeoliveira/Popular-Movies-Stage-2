@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Movie implements Serializable {
 
     @PrimaryKey()
-    private int id;
+    private Long id;
     private String title;
     @SerializedName("poster_path")
     private String poster;
@@ -21,7 +21,7 @@ public class Movie implements Serializable {
     private String rate;
     private String overview;
 
-    public Movie(int id, String title, String poster, String release, String rate, String overview) {
+    public Movie(Long id, String title, String poster, String release, String rate, String overview) {
         this.id = id;
         this.title = title;
         this.poster = poster;
@@ -50,11 +50,11 @@ public class Movie implements Serializable {
         return overview;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,11 +1,14 @@
 package com.example.popularmoviesstage2.features.details.viewmodel;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
 
 import com.example.popularmoviesstage2.data.model.Movie;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
+
+import java.util.List;
 
 import static com.example.popularmoviesstage2.features.details.activity.DetailActivity.MOVIE_KEY;
 
@@ -24,7 +27,11 @@ public class DetailViewModel extends ViewModel {
             movie.postValue( (Movie) intent.getSerializableExtra(MOVIE_KEY));
     }
 
-    public MutableLiveData<Movie> getMovie() {
+    public LiveData<Movie> getMovieById(Long id){
+        return mMoviesRepository.getMovieById(id);
+    }
+
+    public MutableLiveData<Movie> getMovieLiveData() {
         return movie;
     }
 

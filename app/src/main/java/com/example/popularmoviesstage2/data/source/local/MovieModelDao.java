@@ -19,7 +19,7 @@ public interface MovieModelDao {
     LiveData<List<Movie>> getAllMovies();
 
     @Query("select * from Movie where id = :id")
-    Movie getMoviebyId(String id);
+    LiveData<Movie> getMoviebyId(Long id);
 
     @Insert(onConflict = REPLACE)
     void addMovie(Movie movie);

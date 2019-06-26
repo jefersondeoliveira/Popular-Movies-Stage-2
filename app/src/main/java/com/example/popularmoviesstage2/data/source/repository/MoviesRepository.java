@@ -19,4 +19,6 @@ public interface MoviesRepository {
 
     void deleteMovie(Movie movie);
 
+    LiveData<Movie> getMovieById(Long id);
+
 }

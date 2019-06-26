@@ -40,6 +40,11 @@ public class MovieRepositoryImpl implements MoviesRepository {
     }
 
     @Override
+    public LiveData<Movie> getMovieById(Long id){
+        return mAppDatabase.movieDao().getMoviebyId(id);
+    }
+
+    @Override
     public void saveMovie(Movie movie) {
         new saveAsyncTask(mAppDatabase).execute(movie);
     }

@@ -2,11 +2,13 @@ package com.example.popularmoviesstage2.features.details.activity;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +23,6 @@ import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewMode
 import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModelFactory;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 public class DetailActivity extends AppCompatActivity {
 
     public static String MOVIE_KEY = "movie";
@@ -32,6 +32,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mDescription;
     private TextView mRate;
     private ImageView mImage;
+    private FloatingActionButton mButton;
 
     private DetailViewModel mViewModel;
 
@@ -50,10 +51,6 @@ public class DetailActivity extends AppCompatActivity {
 
         mViewModel.setMovieFromExtras(getIntent());
 
-//        fab.setRippleColor(lightVibrantColor);
-//        fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
-        //ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
-
     }
 
     private void bindViews(){
@@ -62,10 +59,11 @@ public class DetailActivity extends AppCompatActivity {
         mDescription = findViewById(R.id.description);
         mRate = findViewById(R.id.rate);
         mImage = findViewById(R.id.image);
+        mButton = findViewById(R.id.fab);
     }
 
     private void observableBinds(){
-        mViewModel.getMovie().observe(this, movie -> {
+        mViewModel.getMovieLiveData().observe(this, movie -> {
             mTitle.setText(movie.getTitle());
             mRelease.setText(movie.getRelease());
             mDescription.setText(movie.getOverview());
@@ -74,7 +72,25 @@ public class DetailActivity extends AppCompatActivity {
                     .load("https://image.tmdb.org/t/p/w500"+ movie.getPoster())
                     .fit().centerCrop()
                     .into(mImage);
+
+            //https://stackoverflow.com/questions/30969455/android-changing-floating-action-button-color
+            mViewModel.getMovieById(movie.getId()).observe(this,
+                    movie1 -> {
+                        mButton.setTag(movie1!=null);
+                        mButton.setBackgroundTintList(ColorStateList
+                                        .valueOf(getResources().getColor(movie1!=null?R.color.colorAccent:R.color.colorPrimary)));
+            });
+
+            mButton.setOnClickListener(v -> {
+                if((Boolean) v.getTag()){
+                    mViewModel.deleteMovie(movie);
+                }else{
+                    mViewModel.saveMovie(movie);
+                }
+            });
+
         });
+
     }
 
     //https://antonioleiva.com/collapsing-toolbar-layout/
