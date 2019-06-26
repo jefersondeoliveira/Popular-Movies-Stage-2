@@ -1,8 +1,10 @@
 package com.example.popularmoviesstage2.features.main.activity;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private TextView mTvError;
 
     private MainViewModel mViewModel;
+    private MainViewModel.SearchType searchType = MainViewModel.SearchType.POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,22 +41,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
 
         MoviesRepository repository = new MovieRepositoryImpl(getApplication());
-        MainViewModelFactory factory = new MainViewModelFactory(repository);
+        MainViewModelFactory factory = new MainViewModelFactory(repository, this);
         mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
 
         bindViews();
         setAdapter();
         observableBinds();
 
-        loadMovies(SearchType.POPULAR);
+        loadMovies();
     }
 
-    private void loadMovies(SearchType type){
-        mViewModel.getMoviesObservable(type.label);
+    private void loadMovies(){
+        mViewModel.getMoviesObservable(searchType);
     }
 
     private void loadFavoriteMovies(){
-        mViewModel.getAllFavoriteMovies().observe(this, this::showData);
+        mViewModel.getFavoriteMoviesObservable();
     }
 
     private void bindViews(){
@@ -77,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private void observableBinds(){
         mViewModel.getShowLoad().observe(this, this::showLoad);
         mViewModel.getMoviesLive().observe(this, this::showData);
+        mViewModel.getFavoriteMoviesLive().observe(this, movies -> {
+            if(searchType == MainViewModel.SearchType.FAVORITES)
+                showData(movies);
+        });
         mViewModel.getOnError().observe(this, throwable -> showError());
     }
 
@@ -106,16 +113,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int menuItemSelected = item.getItemId();
 
         if (menuItemSelected == R.id.actionPopular) {
-            loadMovies(SearchType.POPULAR);
+            searchType = MainViewModel.SearchType.POPULAR;
+            loadMovies();
             return true;
         }
 
         if (menuItemSelected == R.id.actionTopRated) {
-            loadMovies(SearchType.TOP);
+            searchType =MainViewModel.SearchType.TOP;
+            loadMovies();
             return true;
         }
 
         if (menuItemSelected == R.id.actionFavorites) {
+            searchType = MainViewModel.SearchType.FAVORITES;
             loadFavoriteMovies();
             return true;
         }
@@ -126,17 +136,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public void onClick(Movie movie) {
 
-    }
-
-    public enum SearchType {
-        POPULAR("popular"),
-        TOP("top_rated");
-
-        public final String label;
-
-        SearchType(String label) {
-            this.label = label;
-        }
     }
 
 }
