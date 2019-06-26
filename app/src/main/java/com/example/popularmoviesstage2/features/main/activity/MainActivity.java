@@ -17,6 +17,7 @@ import com.example.popularmoviesstage2.R;
 import com.example.popularmoviesstage2.data.model.Movie;
 import com.example.popularmoviesstage2.data.source.repository.MovieRepositoryImpl;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
+import com.example.popularmoviesstage2.features.details.activity.DetailActivity;
 import com.example.popularmoviesstage2.features.main.adapter.MovieAdapter;
 import com.example.popularmoviesstage2.features.main.viewmodel.MainViewModel;
 import com.example.popularmoviesstage2.features.main.viewmodel.MainViewModelFactory;
@@ -27,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private RecyclerView mRvMovies;
     private MovieAdapter mAdapter;
-
     private MainViewModel mViewModel;
     private ProgressBar mLoad;
     private TextView mTvError;
@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setAdapter();
         observableBinds();
 
-        loadMovies(SerachType.POPULAR);
+        loadMovies(SearchType.POPULAR);
     }
 
-    private void loadMovies(SerachType type){
+    private void loadMovies(SearchType type){
         mViewModel.getMoviesObservable(type.label);
     }
 
@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private void setAdapter(){
         mAdapter = new MovieAdapter(movie -> {
-//                Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
-//                intentToStartDetailActivity.putExtra("movie", movie);
-//                startActivity(intentToStartDetailActivity);
+                Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
+                intentToStartDetailActivity.putExtra(DetailActivity.MOVIE_KEY, movie);
+                startActivity(intentToStartDetailActivity);
         });
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mRvMovies.setLayoutManager(layoutManager);
@@ -102,12 +102,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int menuItemSelected = item.getItemId();
 
         if (menuItemSelected == R.id.actionPopular) {
-            loadMovies(SerachType.POPULAR);
+            loadMovies(SearchType.POPULAR);
             return true;
         }
 
         if (menuItemSelected == R.id.actionTopRated) {
-            loadMovies(SerachType.TOP);
+            loadMovies(SearchType.TOP);
             return true;
         }
 
@@ -124,14 +124,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     }
 
-    public enum SerachType {
+    public enum SearchType {
         POPULAR("popular"),
         TOP("top_rated"),
         FAVORITES("favorites");
 
         public final String label;
 
-        SerachType(String label) {
+        SearchType(String label) {
             this.label = label;
         }
     }

@@ -1,26 +1,19 @@
 <resources>
     <string name="app_name">Popular Movies Stage2</string>
     <!--detail labels-->
-    <string name="label_rate">Rate: </string>
-    <string name="label_release_date">Release Date: </string>
-    <string name="label_overview">Overview: </string>
     <string name="label_trailers">Trailers: </string>
     <string name="label_reviews">Reviews: </string>
-    <string name="add_to_favorites">Add to Favorites</string>
-    <string name="remove_from_favorites">Remove from Favorites</string>
-    <string name="trailer_error_message">Looks like there is no connection. </string>
-    <string name="review_error_message">Looks like there is no connection. </string>
-    <string name="rate_out_of_ten"> / 10 </string>
     <!-- details -->
     <string name="detail_title">Matrix</string>
     <string name="detail_plot_synopsis">A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.</string>
-    <string name="detail_rate">5.0</string>
-    <string name="detail_release_date">1999 holy moly</string>
-    <string name="detail_id">id</string>
+    <string name="detail_rate">Rate: %s/10</string>
+    <string name="detail_release_date">10/01/2019</string>
     <!-- menu -->
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
     <string name="favorites">Favorites</string>
 
     <string name="error_message">Failed to get results. Please try again. </string>
+
+
 </resources>
