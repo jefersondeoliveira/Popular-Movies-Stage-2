@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Popular Movies Stage2</string>
+    <string name="app_name">Pop Movies</string>
     <!--detail labels-->
     <string name="label_trailers">Trailers: </string>
     <string name="label_reviews">Reviews: </string>

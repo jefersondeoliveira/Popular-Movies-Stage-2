@@ -1,11 +1,8 @@
 package com.example.popularmoviesstage2.features.main.activity;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void loadFavoriteMovies(){
-        mViewModel.getAllFavoriteMovies().observe(this, movies -> showData(movies));
+        mViewModel.getAllFavoriteMovies().observe(this, this::showData);
     }
 
     private void bindViews(){
@@ -71,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 intentToStartDetailActivity.putExtra(DetailActivity.MOVIE_KEY, movie);
                 startActivity(intentToStartDetailActivity);
         });
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRvMovies.setLayoutManager(layoutManager);
         mRvMovies.setHasFixedSize(true);
         mRvMovies.setAdapter(mAdapter);
@@ -133,8 +130,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     public enum SearchType {
         POPULAR("popular"),
-        TOP("top_rated"),
-        FAVORITES("favorites");
+        TOP("top_rated");
 
         public final String label;
 
