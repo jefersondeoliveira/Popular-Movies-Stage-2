@@ -1,11 +1,13 @@
 package com.example.popularmoviesstage2.features.details.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +15,10 @@ import android.widget.TextView;
 
 import com.example.popularmoviesstage2.R;
 import com.example.popularmoviesstage2.data.model.Movie;
+import com.example.popularmoviesstage2.data.source.repository.MovieRepositoryImpl;
+import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
+import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModel;
+import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModelFactory;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
@@ -25,6 +31,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mRate;
     private ImageView mImage;
 
+    private DetailViewModel mViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,16 +40,13 @@ public class DetailActivity extends AppCompatActivity {
         bindViews();
         setupActionBarAndWindow();
 
-        Movie mMovie = getExtraMovie();
+        MoviesRepository repository = new MovieRepositoryImpl();
+        DetailViewModelFactory factory = new DetailViewModelFactory(repository);
+        mViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
 
-        mTitle.setText(mMovie.getTitle());
-        mRelease.setText(mMovie.getRelease());
-        mDescription.setText(mMovie.getOverview());
-        mRate.setText(String.format(getString(R.string.detail_rate), mMovie.getRate()));
-        Picasso.get()
-                .load("https://image.tmdb.org/t/p/w500"+ mMovie.getPoster())
-                .fit().centerCrop()
-                .into(mImage);
+        observableBinds();
+
+        mViewModel.setMovieFromExtras(getIntent());
 
 //        fab.setRippleColor(lightVibrantColor);
 //        fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
@@ -55,6 +60,22 @@ public class DetailActivity extends AppCompatActivity {
         mDescription = findViewById(R.id.description);
         mRate = findViewById(R.id.rate);
         mImage = findViewById(R.id.image);
+    }
+
+    private void observableBinds(){
+        mViewModel.getMovie().observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                mTitle.setText(movie.getTitle());
+                mRelease.setText(movie.getRelease());
+                mDescription.setText(movie.getOverview());
+                mRate.setText(String.format(getString(R.string.detail_rate), movie.getRate()));
+                Picasso.get()
+                        .load("https://image.tmdb.org/t/p/w500"+ movie.getPoster())
+                        .fit().centerCrop()
+                        .into(mImage);
+            }
+        });
     }
 
     //https://antonioleiva.com/collapsing-toolbar-layout/
@@ -71,10 +92,6 @@ public class DetailActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-    }
-
-    private Movie getExtraMovie(){
-        return (Movie) getIntent().getSerializableExtra(MOVIE_KEY);
     }
 
     @Override

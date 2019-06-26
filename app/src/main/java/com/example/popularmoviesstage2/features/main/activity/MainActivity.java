@@ -28,9 +28,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private RecyclerView mRvMovies;
     private MovieAdapter mAdapter;
-    private MainViewModel mViewModel;
     private ProgressBar mLoad;
     private TextView mTvError;
+
+    private MainViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

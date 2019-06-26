@@ -11,9 +11,9 @@ import java.util.List;
 
 public class MainViewModel extends ViewModel {
 
-    MutableLiveData<List<Movie>> moviesLive = new MutableLiveData<>();
-    MutableLiveData<Boolean> showLoad = new MutableLiveData<>();
-    MutableLiveData<Throwable> onError = new MutableLiveData<>();
+    private MutableLiveData<List<Movie>> moviesLive = new MutableLiveData<>();
+    private MutableLiveData<Boolean> showLoad = new MutableLiveData<>();
+    private MutableLiveData<Throwable> onError = new MutableLiveData<>();
 
     private MoviesRepository mMoviesRepository;
 
