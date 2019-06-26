@@ -1,6 +1,7 @@
 package com.example.popularmoviesstage2.features.main.viewmodel;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -34,6 +35,10 @@ public class MainViewModel extends ViewModel {
             onError.postValue(throwable);
         });
 
+    }
+
+    public LiveData<List<Movie>> getAllFavoriteMovies(){
+        return mMoviesRepository.getAllMovies();
     }
 
     public MutableLiveData<List<Movie>> getMoviesLive() {

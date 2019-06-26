@@ -21,6 +21,8 @@ import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewMode
 import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModelFactory;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static String MOVIE_KEY = "movie";
@@ -40,7 +42,7 @@ public class DetailActivity extends AppCompatActivity {
         bindViews();
         setupActionBarAndWindow();
 
-        MoviesRepository repository = new MovieRepositoryImpl();
+        MoviesRepository repository = new MovieRepositoryImpl(getApplication());
         DetailViewModelFactory factory = new DetailViewModelFactory(repository);
         mViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
 
@@ -63,18 +65,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void observableBinds(){
-        mViewModel.getMovie().observe(this, new Observer<Movie>() {
-            @Override
-            public void onChanged(@Nullable Movie movie) {
-                mTitle.setText(movie.getTitle());
-                mRelease.setText(movie.getRelease());
-                mDescription.setText(movie.getOverview());
-                mRate.setText(String.format(getString(R.string.detail_rate), movie.getRate()));
-                Picasso.get()
-                        .load("https://image.tmdb.org/t/p/w500"+ movie.getPoster())
-                        .fit().centerCrop()
-                        .into(mImage);
-            }
+        mViewModel.getMovie().observe(this, movie -> {
+            mTitle.setText(movie.getTitle());
+            mRelease.setText(movie.getRelease());
+            mDescription.setText(movie.getOverview());
+            mRate.setText(String.format(getString(R.string.detail_rate), movie.getRate()));
+            Picasso.get()
+                    .load("https://image.tmdb.org/t/p/w500"+ movie.getPoster())
+                    .fit().centerCrop()
+                    .into(mImage);
         });
     }
 

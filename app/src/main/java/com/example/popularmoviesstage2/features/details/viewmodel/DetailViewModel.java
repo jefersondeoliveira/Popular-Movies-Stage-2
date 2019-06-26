@@ -7,8 +7,6 @@ import android.content.Intent;
 import com.example.popularmoviesstage2.data.model.Movie;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
 
-import java.util.List;
-
 import static com.example.popularmoviesstage2.features.details.activity.DetailActivity.MOVIE_KEY;
 
 public class DetailViewModel extends ViewModel {
@@ -28,6 +26,14 @@ public class DetailViewModel extends ViewModel {
 
     public MutableLiveData<Movie> getMovie() {
         return movie;
+    }
+
+    public void saveMovie(Movie movie){
+        mMoviesRepository.saveMovie(movie);
+    }
+
+    public void deleteMovie(Movie movie){
+        mMoviesRepository.deleteMovie(movie);
     }
 
 }

@@ -1,9 +1,11 @@
 package com.example.popularmoviesstage2.features.main.activity;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MoviesRepository repository = new MovieRepositoryImpl();
+        MoviesRepository repository = new MovieRepositoryImpl(getApplication());
         MainViewModelFactory factory = new MainViewModelFactory(repository);
         mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
 
@@ -51,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private void loadMovies(SearchType type){
         mViewModel.getMoviesObservable(type.label);
+    }
+
+    private void loadFavoriteMovies(){
+        mViewModel.getAllFavoriteMovies().observe(this, movies -> showData(movies));
     }
 
     private void bindViews(){
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
 
         if (menuItemSelected == R.id.actionFavorites) {
-            //loadMovies(SerachType.FAVORITES);
+            loadFavoriteMovies();
             return true;
         }
 
