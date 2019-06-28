@@ -1,5 +1,6 @@
 package com.example.popularmoviesstage2.features.main.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,9 +19,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     private List<Movie> mMovieData = new ArrayList<>();
     private final MovieAdapterOnClickHandler mClickHandler;
+    private Context mContext;
 
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
+    public MovieAdapter(MovieAdapterOnClickHandler clickHandler, Context context) {
         mClickHandler = clickHandler;
+        mContext = context;
     }
 
     public void updateData(List<Movie> movies){
@@ -39,7 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @NonNull
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_movie, viewGroup, false);
         return new MovieAdapterViewHolder(view);
     }
 
@@ -49,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Movie item = mMovieData.get(position);
 
         Picasso.get()
-                .load("https://image.tmdb.org/t/p/w500"+ item.getPoster())
+                .load(String.format(mContext.getString(R.string.poster_base_url), item.getPoster()))
                 .into(holder.mMovieListImageView);
     }
 

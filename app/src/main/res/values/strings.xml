@@ -14,6 +14,8 @@
     <string name="favorites">Favorites</string>
 
     <string name="error_message">Failed to get results. Please try again. </string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
 
 
 </resources>

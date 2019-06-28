@@ -1,15 +1,19 @@
 package com.example.popularmoviesstage2.features.details.activity;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.util.StringUtil;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,8 +21,10 @@ import android.widget.TextView;
 
 import com.example.popularmoviesstage2.R;
 import com.example.popularmoviesstage2.data.model.Movie;
+import com.example.popularmoviesstage2.data.model.Trailer;
 import com.example.popularmoviesstage2.data.source.repository.MovieRepositoryImpl;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
+import com.example.popularmoviesstage2.features.details.adapter.TrailerAdapter;
 import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModel;
 import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModelFactory;
 import com.squareup.picasso.Picasso;
@@ -33,6 +39,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mRate;
     private ImageView mImage;
     private FloatingActionButton mButton;
+    private RecyclerView mRvTrailers;
+    private TrailerAdapter mTrailerAdapter;
 
     private DetailViewModel mViewModel;
 
@@ -42,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         bindViews();
         setupActionBarAndWindow();
+        setTrailerAdapter();
 
         MoviesRepository repository = new MovieRepositoryImpl(getApplication());
         DetailViewModelFactory factory = new DetailViewModelFactory(repository);
@@ -60,18 +69,18 @@ public class DetailActivity extends AppCompatActivity {
         mRate = findViewById(R.id.rate);
         mImage = findViewById(R.id.image);
         mButton = findViewById(R.id.fab);
+        mRvTrailers = findViewById(R.id.rvTrailers);
     }
 
     private void observableBinds(){
         mViewModel.getMovieLiveData().observe(this, movie -> {
-            mTitle.setText(movie.getTitle());
-            mRelease.setText(movie.getRelease());
-            mDescription.setText(movie.getOverview());
-            mRate.setText(String.format(getString(R.string.detail_rate), movie.getRate()));
-            Picasso.get()
-                    .load("https://image.tmdb.org/t/p/w500"+ movie.getPoster())
-                    .fit().centerCrop()
-                    .into(mImage);
+
+            observableTrailers();
+
+            assert movie != null;
+            mViewModel.getTrailersObservable(movie.getId());
+
+            setMovieContent(movie);
 
             //https://stackoverflow.com/questions/30969455/android-changing-floating-action-button-color
             mViewModel.getMovieById(movie.getId()).observe(this,
@@ -91,6 +100,33 @@ public class DetailActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    private void setMovieContent(Movie movie){
+        mTitle.setText(movie.getTitle());
+        mRelease.setText(movie.getRelease());
+        mDescription.setText(movie.getOverview());
+        mRate.setText(String.format(getString(R.string.detail_rate), movie.getRate()));
+        Picasso.get()
+                .load(String.format(getString(R.string.poster_base_url), movie.getPoster()))
+                .fit().centerCrop()
+                .into(mImage);
+    }
+
+    private void observableTrailers(){
+        mViewModel.getTrailers().observe(this, trailers -> mTrailerAdapter.updateData(trailers));
+    }
+
+    private void setTrailerAdapter(){
+        mTrailerAdapter = new TrailerAdapter(trailer -> {
+            Uri openTrailerVideo = Uri.parse(String.format(getString(R.string.youtube_watch),trailer.getKey()));
+            Intent intent = new Intent(Intent.ACTION_VIEW, openTrailerVideo);
+            startActivity(intent);
+        }, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        mRvTrailers.setLayoutManager(layoutManager);
+        mRvTrailers.setAdapter(mTrailerAdapter);
     }
 
     //https://antonioleiva.com/collapsing-toolbar-layout/

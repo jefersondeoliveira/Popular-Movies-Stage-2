@@ -1,10 +1,8 @@
 package com.example.popularmoviesstage2.features.main.activity;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
                 intentToStartDetailActivity.putExtra(DetailActivity.MOVIE_KEY, movie);
                 startActivity(intentToStartDetailActivity);
-        });
+        }, this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRvMovies.setLayoutManager(layoutManager);
         mRvMovies.setHasFixedSize(true);
