@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModel;
 import android.content.Intent;
 
 import com.example.popularmoviesstage2.data.model.Movie;
+import com.example.popularmoviesstage2.data.model.Review;
 import com.example.popularmoviesstage2.data.model.Trailer;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
 
@@ -18,6 +19,9 @@ public class DetailViewModel extends ViewModel {
 
     private MutableLiveData<Movie> movie = new MutableLiveData<>();
     private MutableLiveData<List<Trailer>> trailers = new MutableLiveData<>();
+    private MutableLiveData<List<Review>> reviews = new MutableLiveData<>();
+    private MutableLiveData<Boolean> showTrailerLoad = new MutableLiveData<>();
+    private MutableLiveData<Boolean> showReviewLoad = new MutableLiveData<>();
 
     private MoviesRepository mMoviesRepository;
 
@@ -42,6 +46,18 @@ public class DetailViewModel extends ViewModel {
         return trailers;
     }
 
+    public MutableLiveData<List<Review>> getReviews() {
+        return reviews;
+    }
+
+    public MutableLiveData<Boolean> getShowTrailerLoad() {
+        return showTrailerLoad;
+    }
+
+    public MutableLiveData<Boolean> getShowReviewLoad() {
+        return showReviewLoad;
+    }
+
     public void saveMovie(Movie movie){
         mMoviesRepository.saveMovie(movie);
     }
@@ -53,13 +69,24 @@ public class DetailViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public void getTrailersObservable(Long id) {
         mMoviesRepository.getMoviesTrailerById(id).doOnSubscribe(disposable -> {
-            //showLoad.postValue(true);
+            showTrailerLoad.postValue(true);
         }).subscribe(response -> {
-            //showLoad.postValue(false);
+            showTrailerLoad.postValue(false);
             trailers.postValue(response.getResults());
         }, throwable -> {
-//            showLoad.postValue(false);
-//            onError.postValue(throwable);
+            showTrailerLoad.postValue(false);
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    public void getReviewsObservable(Long id) {
+        mMoviesRepository.getMoviesReviewsById(id).doOnSubscribe(disposable -> {
+            showReviewLoad.postValue(true);
+        }).subscribe(response -> {
+            showReviewLoad.postValue(false);
+            reviews.postValue(response.getResults());
+        }, throwable -> {
+            showReviewLoad.postValue(false);
         });
     }
 

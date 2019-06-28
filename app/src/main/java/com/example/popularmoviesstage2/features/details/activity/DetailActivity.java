@@ -1,7 +1,6 @@
 package com.example.popularmoviesstage2.features.details.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.util.StringUtil;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -11,19 +10,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.popularmoviesstage2.R;
 import com.example.popularmoviesstage2.data.model.Movie;
-import com.example.popularmoviesstage2.data.model.Trailer;
 import com.example.popularmoviesstage2.data.source.repository.MovieRepositoryImpl;
 import com.example.popularmoviesstage2.data.source.repository.MoviesRepository;
+import com.example.popularmoviesstage2.features.details.adapter.ReviewAdapter;
 import com.example.popularmoviesstage2.features.details.adapter.TrailerAdapter;
 import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModel;
 import com.example.popularmoviesstage2.features.details.viewmodel.DetailViewModelFactory;
@@ -40,7 +39,11 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView mImage;
     private FloatingActionButton mButton;
     private RecyclerView mRvTrailers;
+    private RecyclerView mRvReviews;
     private TrailerAdapter mTrailerAdapter;
+    private ReviewAdapter mReviewAdapter;
+    private ProgressBar mPbTrailers;
+    private ProgressBar mPbReviews;
 
     private DetailViewModel mViewModel;
 
@@ -51,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         bindViews();
         setupActionBarAndWindow();
         setTrailerAdapter();
+        setReviewAdapter();
 
         MoviesRepository repository = new MovieRepositoryImpl(getApplication());
         DetailViewModelFactory factory = new DetailViewModelFactory(repository);
@@ -70,15 +74,20 @@ public class DetailActivity extends AppCompatActivity {
         mImage = findViewById(R.id.image);
         mButton = findViewById(R.id.fab);
         mRvTrailers = findViewById(R.id.rvTrailers);
+        mRvReviews = findViewById(R.id.rvReviews);
+        mPbTrailers = findViewById(R.id.pbTrailers);
+        mPbReviews = findViewById(R.id.pbReviews);
     }
 
     private void observableBinds(){
         mViewModel.getMovieLiveData().observe(this, movie -> {
 
             observableTrailers();
+            observableReviews();
 
             assert movie != null;
             mViewModel.getTrailersObservable(movie.getId());
+            mViewModel.getReviewsObservable(movie.getId());
 
             setMovieContent(movie);
 
@@ -114,7 +123,15 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void observableTrailers(){
+        mViewModel.getShowTrailerLoad().observe(this, showLoad ->
+                mPbTrailers.setVisibility(showLoad != null && showLoad ? View.VISIBLE : View.GONE));
         mViewModel.getTrailers().observe(this, trailers -> mTrailerAdapter.updateData(trailers));
+    }
+
+    private void observableReviews(){
+        mViewModel.getShowReviewLoad().observe(this, showLoad ->
+                mPbReviews.setVisibility(showLoad != null && showLoad ? View.VISIBLE : View.GONE));
+        mViewModel.getReviews().observe(this, reviews -> mReviewAdapter.updateData(reviews));
     }
 
     private void setTrailerAdapter(){
@@ -127,6 +144,14 @@ public class DetailActivity extends AppCompatActivity {
                 LinearLayoutManager.HORIZONTAL, false);
         mRvTrailers.setLayoutManager(layoutManager);
         mRvTrailers.setAdapter(mTrailerAdapter);
+    }
+
+    private void setReviewAdapter(){
+        mReviewAdapter = new ReviewAdapter(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        mRvReviews.setLayoutManager(layoutManager);
+        mRvReviews.setAdapter(mReviewAdapter);
     }
 
     //https://antonioleiva.com/collapsing-toolbar-layout/

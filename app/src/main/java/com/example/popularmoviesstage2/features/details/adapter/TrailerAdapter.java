@@ -26,8 +26,8 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieAda
         mContext = context;
     }
 
-    public void updateData(List<Trailer> movies){
-        mTrailerData = movies;
+    public void updateData(List<Trailer> trailers){
+        mTrailerData = trailers;
         notifyDataSetChanged();
     }
 

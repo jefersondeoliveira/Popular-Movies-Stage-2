@@ -16,6 +16,7 @@
     <string name="error_message">Failed to get results. Please try again. </string>
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, mattis id, vel lectus tempor lorem curabitur sem, nam nisl quis sed, turpis vitae ipsum ac eget.</string>
 
 
 </resources>

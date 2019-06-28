@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.example.popularmoviesstage2.data.model.Movie;
 import com.example.popularmoviesstage2.data.model.MovieResponse;
+import com.example.popularmoviesstage2.data.model.ReviewResponse;
 import com.example.popularmoviesstage2.data.model.TrailerResponse;
 import com.example.popularmoviesstage2.data.source.local.AppDatabase;
 import com.example.popularmoviesstage2.data.source.remote.MovieApiService;
@@ -38,6 +39,13 @@ public class MovieRepositoryImpl implements MoviesRepository {
     @Override
     public Single<TrailerResponse> getMoviesTrailerById(Long id) {
         return mMovieApiService.getMoviesTrailerById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Single<ReviewResponse> getMoviesReviewsById(Long id) {
+        return mMovieApiService.getMoviesReviewsById(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 
 import com.example.popularmoviesstage2.data.model.Movie;
 import com.example.popularmoviesstage2.data.model.MovieResponse;
+import com.example.popularmoviesstage2.data.model.ReviewResponse;
 import com.example.popularmoviesstage2.data.model.TrailerResponse;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface MoviesRepository {
     Single<MovieResponse> getMoviesBySort(String sort);
 
     Single<TrailerResponse> getMoviesTrailerById(Long id);
+
+    Single<ReviewResponse> getMoviesReviewsById(Long id);
 
     LiveData<List<Movie>> getAllMovies();
 
