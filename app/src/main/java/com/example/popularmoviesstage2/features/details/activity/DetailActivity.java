@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -44,6 +45,7 @@ public class DetailActivity extends AppCompatActivity {
     private ReviewAdapter mReviewAdapter;
     private ProgressBar mPbTrailers;
     private ProgressBar mPbReviews;
+    private CardView mCvRevies;
 
     private DetailViewModel mViewModel;
 
@@ -77,6 +79,7 @@ public class DetailActivity extends AppCompatActivity {
         mRvReviews = findViewById(R.id.rvReviews);
         mPbTrailers = findViewById(R.id.pbTrailers);
         mPbReviews = findViewById(R.id.pbReviews);
+        mCvRevies = findViewById(R.id.cvRevies);
     }
 
     private void observableBinds(){
@@ -131,7 +134,10 @@ public class DetailActivity extends AppCompatActivity {
     private void observableReviews(){
         mViewModel.getShowReviewLoad().observe(this, showLoad ->
                 mPbReviews.setVisibility(showLoad != null && showLoad ? View.VISIBLE : View.GONE));
-        mViewModel.getReviews().observe(this, reviews -> mReviewAdapter.updateData(reviews));
+        mViewModel.getReviews().observe(this, reviews -> {
+            mCvRevies.setVisibility(reviews!= null && reviews.size()>0?View.VISIBLE: View.GONE);
+            mReviewAdapter.updateData(reviews);
+        });
     }
 
     private void setTrailerAdapter(){

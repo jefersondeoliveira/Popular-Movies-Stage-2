@@ -1,5 +1,7 @@
 package com.example.popularmoviesstage2.data.source.remote;
 
+import com.example.popularmoviesstage2.BuildConfig;
+
 import java.io.IOException;
 
 import io.reactivex.schedulers.Schedulers;
@@ -40,7 +42,7 @@ public class RetrofitClientInstance {
 
                             HttpUrl url = original.url().newBuilder()
                                     .addQueryParameter("api_key",
-                                            "85a08e715cb64d5e0d9f87daf23a3b60").build();
+                                            BuildConfig.ApiKey).build();
 
                             Request.Builder requestBuilder = original.newBuilder()
                                     .url(url)
