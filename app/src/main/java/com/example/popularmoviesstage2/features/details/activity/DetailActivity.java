@@ -147,7 +147,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setReviewAdapter(){
-        mReviewAdapter = new ReviewAdapter(this);
+        mReviewAdapter = new ReviewAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         mRvReviews.setLayoutManager(layoutManager);

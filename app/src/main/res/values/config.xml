@@ -2,4 +2,5 @@
     <string name="poster_base_url">https://image.tmdb.org/t/p/w500%s</string>
     <string name="youtube_img_url">https://img.youtube.com/vi/%s/default.jpg</string>
     <string name="youtube_watch">https://www.youtube.com/watch?v=%s</string>
+    <!--https://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api-->
 </resources>

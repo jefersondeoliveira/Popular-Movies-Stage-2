@@ -1,6 +1,5 @@
 package com.example.popularmoviesstage2.features.details.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,11 +16,6 @@ import java.util.List;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MovieAdapterViewHolder> {
 
     private List<Review> mReviewData = new ArrayList<>();
-    private Context mContext;
-
-    public ReviewAdapter(Context context) {
-        mContext = context;
-    }
 
     public void updateData(List<Review> reviews){
         mReviewData = reviews;

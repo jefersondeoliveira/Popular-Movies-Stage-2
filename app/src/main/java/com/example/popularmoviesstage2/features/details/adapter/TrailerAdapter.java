@@ -54,6 +54,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.MovieAda
 
         Picasso.get()
                 .load(String.format(mContext.getString(R.string.youtube_img_url), item.getKey()))
+                .placeholder(R.drawable.placeholder)
                 .into(holder.mTrailerImageView);
     }
 
